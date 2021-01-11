@@ -78,15 +78,16 @@ for chr_id in chrs.keys():
 	chr_str_for = chrs[str(chr_id)][0]
 	chr_str_rev = chrs[str(chr_id)][1]
 	for a in range(0,len(genes)):
+		print(genes[a])
 		if genes[a].seqid == chr_id:
 			f.write("%s/%s\n\n" %(genes[a].id, chr_id))
-
+			print("%s/%s/%s/%s" %(genes[a].id, genes[a].seqid, chr_id, genes[a].strand))
 #If genes are located on the positive strand, the codes takes the first 300 bp of each gene:
 			if genes[a].strand == "+":
 				start = genes[a].start
 				end = genes[a].start + (genes[a].stop - genes[a].start)//3
-
 				gRNA_gene = chr_str_for[start:end]
+
 #Finds PAM sites (NGG) and gRNAs for the first 300 bp of each gene located at the positive strand:
 				for i in range(22, len(gRNA_gene)):
 					if gRNA_gene[i]=="G" and gRNA_gene[i-1]=="G":
@@ -107,16 +108,14 @@ for chr_id in chrs.keys():
 						GC_Per_FWD = ("%f" %(((G + C)/20)*100))
 
 #Applying some filters on found gRNAs before writing them out on the output file:
-						if len(re.findall(r'TTT[T]+', gRNA_FWD)) >= 1:
-							break
-						else:
-							for chr_id in chrs.keys():
-							 canwrite = True
-							 if genes[a].seqid == chr_id:
-							  if not ( len(re.findall(gRNA_FWD_Core, chrs[str(chr_id)][0])) == 1 or len(re.findall(gRNA_FWD_Core, chrs[str(chr_id)][1])) == 0):
+						if len(re.findall(r'TTT[T]+', gRNA_FWD)) == 0:
+							canwrite = True
+							for chr in chrs.keys():
+							 if genes[a].seqid == chr:
+							  if ( len(re.findall(gRNA_FWD_Core, chrs[str(chr)][0])) != 1 or len(re.findall(gRNA_FWD_Core, chrs[str(chr)][1])) != 0):
 							   canwrite = False
-							 if genes[a].seqid != chr_id:
-							  if not ( len(re.findall(gRNA_FWD_Core, chrs[str(chr_id)][0])) == 0 or len(re.findall(gRNA_FWD_Core, chrs[str(chr_id)][1])) == 0):
+							 if genes[a].seqid != chr:
+							  if ( len(re.findall(gRNA_FWD_Core, chrs[str(chr)][0])) != 0 or len(re.findall(gRNA_FWD_Core, chrs[str(chr)][1])) != 0):
 							   canwrite = False
 
 						if canwrite  == True:
@@ -148,16 +147,14 @@ for chr_id in chrs.keys():
 								continue
 						GC_Per_RVS = ("%f" %(((G + C)/20)*100))
 
-						if len(re.findall(r'TTT[T]+', gRNA_RVS)) >= 1:
-							break
-						else:
-							for chr_id in chrs.keys():
-							 canwrite = True
-							 if genes[a].seqid == chr_id:
-							  if not ( len(re.findall(gRNA_RVS_Core, chrs[str(chr_id)][0])) == 0 or len(re.findall(gRNA_RVS_Core, chrs[str(chr_id)][1])) == 1):
+						if len(re.findall(r'TTT[T]+', gRNA_RVS)) == 0:
+							canwrite = True
+							for chr in chrs.keys():
+							 if genes[a].seqid == chr:
+							  if ( len(re.findall(gRNA_RVS_Core, chrs[str(chr)][0])) != 0 or len(re.findall(gRNA_RVS_Core, chrs[str(chr)][1])) != 1):
 							   canwrite = False
-							 if genes[a].seqid != chr_id:
-							  if not ( len(re.findall(gRNA_RVS_Core, chrs[str(chr_id)][0])) == 0 or len(re.findall(gRNA_RVS_Core, chrs[str(chr_id)][1])) == 0):
+							 if genes[a].seqid != chr:
+							  if ( len(re.findall(gRNA_RVS_Core, chrs[str(chr)][0])) != 0 or len(re.findall(gRNA_RVS_Core, chrs[str(chr)][1])) != 0):
 							   canwrite = False
 						if canwrite  == True:
 							f.write("%s\t%s\t%s\n" %(PAM_RVS, gRNA_RVS, GC_Per_RVS))
@@ -168,7 +165,7 @@ for chr_id in chrs.keys():
 				end = start - (genes[a].stop - genes[a].start) // 3
 
 				gRNA_gene = chr_str_for[end:start]
-
+#				print("%s/%s/%s" %(genes[a].id, chr_id, genes[a].strand))
 				for i in range(22, len(gRNA_gene)):
 					if gRNA_gene[i] == "G" and gRNA_gene[i-1] == "G":
 
@@ -187,16 +184,14 @@ for chr_id in chrs.keys():
 								continue
 						GC_Per_FWD = ("%f" %(((G + C)/20)*100))
 
-						if len(re.findall(r'TTT[T]+', gRNA_FWD)) >= 1:
-							break
-						else:
-							for chr_id in chrs.keys():
-							 canwrite = True
-							 if genes[a].seqid == chr_id:
-							  if not ( len(re.findall(gRNA_FWD_Core, chrs[str(chr_id)][0])) == 1 or len(re.findall(gRNA_FWD_Core, chrs[str(chr_id)][1])) == 0):
+						if len(re.findall(r'TTT[T]+', gRNA_FWD)) == 0:
+							canwrite = True
+							for chr in chrs.keys():
+							 if genes[a].seqid == chr:
+							  if ( len(re.findall(gRNA_FWD_Core, chrs[str(chr)][0])) != 1 or len(re.findall(gRNA_FWD_Core, chrs[str(chr)][1])) != 0):
 							   canwrite = False
-							 if genes[a].seqid != chr_id:
-							  if not ( len(re.findall(gRNA_FWD_Core, chrs[str(chr_id)][0])) == 0 or len(re.findall(gRNA_FWD_Core, chrs[str(chr_id)][1])) == 0):
+							 if genes[a].seqid != chr:
+							  if ( len(re.findall(gRNA_FWD_Core, chrs[str(chr)][0])) != 0 or len(re.findall(gRNA_FWD_Core, chrs[str(chr)][1])) != 0):
 							   canwrite = False
 						if canwrite  == True:
 							f.write("%s\t%s\t%s\n" %(PAM_FWD, gRNA_FWD, GC_Per_FWD))
@@ -227,16 +222,14 @@ for chr_id in chrs.keys():
 								continue
 						GC_Per_RVS = ("%f" %(((G + C)/20)*100))
 
-						if len(re.findall(r'TTT[T]+', gRNA_RVS)) >= 1:
-							break
-						else:
-							for chr_id in chrs.keys():
-							 canwrite = True
-							 if genes[a].seqid == chr_id:
-							  if not ( len(re.findall(gRNA_RVS_Core, chrs[str(chr_id)][0])) == 1 or len(re.findall(gRNA_RVS_Core, chrs[str(chr_id)][1])) == 0):
+						if len(re.findall(r'TTT[T]+', gRNA_RVS)) == 0:
+							canwrite = True
+							for chr in chrs.keys():
+							 if genes[a].seqid == chr:
+							  if ( len(re.findall(gRNA_RVS_Core, chrs[str(chr)][0])) != 0 or len(re.findall(gRNA_RVS_Core, chrs[str(chr)][1])) != 1):
 							   canwrite = False
-							 if genes[a].seqid != chr_id:
-							  if not ( len(re.findall(gRNA_RVS_Core, chrs[str(chr_id)][0])) == 0 or len(re.findall(gRNA_RVS_Core, chrs[str(chr_id)][1])) == 0):
+							 if genes[a].seqid != chr:
+							  if ( len(re.findall(gRNA_RVS_Core, chrs[str(chr)][0])) != 0 or len(re.findall(gRNA_RVS_Core, chrs[str(chr)][1])) != 0):
 							   canwrite = False
 						if canwrite  == True:
 							f.write("%s\t%s\t%s\n" %(PAM_RVS, gRNA_RVS, GC_Per_RVS))
